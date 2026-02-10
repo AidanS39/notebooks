@@ -1,0 +1,2 @@
+export VSCODE_IPC_HOOK_CLI=$(lsof | grep $USER | grep vscode-ipc | awk '{print $(NF-1)}' | head -n 1)
+jupyter notebook --no-browser --ip=$(hostname -i) --port=8888
