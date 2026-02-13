@@ -4,6 +4,7 @@ from torch import optim
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
 from torch.nn.utils.rnn import pad_sequence
+import torch._inductor.config as inductor_config
 from datasets import load_dataset
 import tiktoken
 import os
@@ -17,6 +18,9 @@ from model import train_model
 def main():
     torch.manual_seed(42)
     torch.set_float32_matmul_precision('high')
+    inductor_config.split_reductions = False
+
+    
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     print(device)
 
@@ -43,10 +47,10 @@ def main():
 
     model_config = TransformerConfig(
         n_vocab=encoder.n_vocab + 1, # NOTE: add 1 for <EOS> token
-        d_model=256,
+        d_model=512,
         d_query=64,
-        n_heads=4,
-        n_layers=4,
+        n_heads=8,
+        n_layers=8,
         d_up=512,
         device=device
     )

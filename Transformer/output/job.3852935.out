@@ -1,0 +1,261 @@
+cuda
+Starting training on epoch 1, batch 1
+/home/hpc/stonera3/.local/lib/python3.10/site-packages/torch/_inductor/lowering.py:7627: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+Epoch [1].[8] Loss: 7.605399131774902
+Epoch [1].[16] Loss: 4.7071123123168945
+Epoch [1].[24] Loss: 4.096879005432129
+Epoch [1].[32] Loss: 4.200187683105469
+Epoch [1].[40] Loss: 4.9711594581604
+Epoch [1].[48] Loss: 4.837296485900879
+Epoch [1].[56] Loss: 3.8607122898101807
+Epoch [1].[64] Loss: 2.814345598220825
+Epoch [1].[72] Loss: 4.622066497802734
+Epoch [1].[80] Loss: 2.991795539855957
+Epoch [1].[88] Loss: 3.794755697250366
+Epoch [1].[96] Loss: 4.2368693351745605
+Epoch [1].[104] Loss: 4.460555553436279
+Epoch [1].[112] Loss: 2.377788543701172
+Epoch [1].[120] Loss: 3.748116970062256
+Epoch [1].[128] Loss: 2.5739259719848633
+TIME: 0.5845601670444012 seconds per batch
+USAGE: Allocated 4.48GB, Reserved 38.83GB, Peak: 35.06GB
+/home/hpc/stonera3/.local/lib/python3.10/site-packages/torch/_inductor/lowering.py:7627: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+/home/hpc/stonera3/.local/lib/python3.10/site-packages/torch/_inductor/lowering.py:7627: UserWarning: 
+Online softmax is disabled on the fly since Inductor decides to
+split the reduction. Cut an issue to PyTorch if this is an
+important use case and you want to speed it up with online
+softmax.
+
+  warnings.warn(
+VALIDATE: Average Loss: 3.0406782627105713
+Saving model checkpoint at checkpoint.pt.... DO NOT EXIT
+Model checkpoint saved at checkpoint.pt at epoch 0 batch 128
+Epoch [1].[136] Loss: 2.949282646179199
+Epoch [1].[144] Loss: 2.0722429752349854
+Epoch [1].[152] Loss: 2.103785991668701
+Epoch [1].[160] Loss: 2.8399369716644287
+Epoch [1].[168] Loss: 2.8557822704315186
+Epoch [1].[176] Loss: 2.0966086387634277
+Epoch [1].[184] Loss: 3.180009603500366
+Epoch [1].[192] Loss: 2.681950569152832
+Epoch [1].[200] Loss: 3.095561981201172
+Epoch [1].[208] Loss: 2.9441587924957275
+Epoch [1].[216] Loss: 1.386073112487793
+Epoch [1].[224] Loss: 2.975353717803955
+Epoch [1].[232] Loss: 2.2166106700897217
+Epoch [1].[240] Loss: 2.6950881481170654
+Epoch [1].[248] Loss: 2.8547933101654053
+Epoch [1].[256] Loss: 2.7529263496398926
+TIME: 0.3553682994097471 seconds per batch
+USAGE: Allocated 4.23GB, Reserved 42.27GB, Peak: 35.59GB
+VALIDATE: Average Loss: 2.5420949459075928
+Saving model checkpoint at checkpoint.pt.... DO NOT EXIT
+Model checkpoint saved at checkpoint.pt at epoch 0 batch 256
+Epoch [1].[264] Loss: 2.3351869583129883
+Epoch [1].[272] Loss: 2.4071667194366455
+Epoch [1].[280] Loss: 2.1747019290924072
+Epoch [1].[288] Loss: 3.0582661628723145
+Epoch [1].[296] Loss: 2.9190332889556885
+Epoch [1].[304] Loss: 2.044252395629883
+Epoch [1].[312] Loss: 2.137221574783325
+Epoch [1].[320] Loss: 2.682335138320923
+Epoch [1].[328] Loss: 2.742933750152588
+Epoch [1].[336] Loss: 2.3148372173309326
+Epoch [1].[344] Loss: 2.241025924682617
+Epoch [1].[352] Loss: 3.511681079864502
+Epoch [1].[360] Loss: 2.467977523803711
+Epoch [1].[368] Loss: 1.614182710647583
+Epoch [1].[376] Loss: 2.3115594387054443
+Epoch [1].[384] Loss: 2.4452948570251465
+TIME: 0.21442344039678574 seconds per batch
+USAGE: Allocated 4.03GB, Reserved 46.71GB, Peak: 35.59GB
+VALIDATE: Average Loss: 2.5467190742492676
+Saving model checkpoint at checkpoint.pt.... DO NOT EXIT
+Model checkpoint saved at checkpoint.pt at epoch 0 batch 384
+Epoch [1].[392] Loss: 2.3487372398376465
+Epoch [1].[400] Loss: 1.9252440929412842
+Epoch [1].[408] Loss: 2.6617043018341064
+Epoch [1].[416] Loss: 2.6593165397644043
+Epoch [1].[424] Loss: 1.9874826669692993
+Epoch [1].[432] Loss: 2.8897910118103027
+Epoch [1].[440] Loss: 1.8887704610824585
+Epoch [1].[448] Loss: 1.917832374572754
+Epoch [1].[456] Loss: 2.7513201236724854
+Epoch [1].[464] Loss: 2.4779133796691895
+Epoch [1].[472] Loss: 1.863864779472351
+Epoch [1].[480] Loss: 2.2901980876922607
+Epoch [1].[488] Loss: 2.5865190029144287
+Epoch [1].[496] Loss: 2.145512580871582
+Epoch [1].[504] Loss: 2.0818352699279785
+Epoch [1].[512] Loss: 1.7891349792480469
+TIME: 0.22188874334096909 seconds per batch
+USAGE: Allocated 5.18GB, Reserved 46.71GB, Peak: 35.59GB
+VALIDATE: Average Loss: 2.3790385723114014
+Saving model checkpoint at checkpoint.pt.... DO NOT EXIT
+Model checkpoint saved at checkpoint.pt at epoch 0 batch 512
+Epoch [1].[520] Loss: 2.5119099617004395
+Epoch [1].[528] Loss: 2.5881175994873047
+Epoch [1].[536] Loss: 2.196080207824707
+Epoch [1].[544] Loss: 1.8975740671157837
+Epoch [1].[552] Loss: 2.8265905380249023
+Epoch [1].[560] Loss: 2.56231951713562
+Epoch [1].[568] Loss: 2.3410627841949463
+Epoch [1].[576] Loss: 2.3023805618286133
+Epoch [1].[584] Loss: 2.5474114418029785
+Epoch [1].[592] Loss: 2.111123561859131
+Epoch [1].[600] Loss: 2.1137499809265137
+Epoch [1].[608] Loss: 1.9814457893371582
+Epoch [1].[616] Loss: 3.3171167373657227
+Epoch [1].[624] Loss: 2.2198662757873535
+Epoch [1].[632] Loss: 2.069187641143799
+Epoch [1].[640] Loss: 2.169342041015625
+TIME: 0.22009478509426117 seconds per batch
+USAGE: Allocated 4.59GB, Reserved 46.71GB, Peak: 35.67GB
+VALIDATE: Average Loss: 2.278550624847412
+Saving model checkpoint at checkpoint.pt.... DO NOT EXIT
+Model checkpoint saved at checkpoint.pt at epoch 0 batch 640
+Epoch [1].[648] Loss: 2.2240402698516846
+Epoch [1].[656] Loss: 2.6810390949249268
+Epoch [1].[664] Loss: 1.6500093936920166
+Epoch [1].[672] Loss: 3.1922552585601807
+Epoch [1].[680] Loss: 2.48861026763916
+Epoch [1].[688] Loss: 1.1553157567977905
+Epoch [1].[696] Loss: 1.5771712064743042
+Epoch [1].[704] Loss: 2.0043795108795166
+Epoch [1].[712] Loss: 1.4275943040847778
+Epoch [1].[720] Loss: 3.3789751529693604
+Epoch [1].[728] Loss: 2.3243000507354736
+Epoch [1].[736] Loss: 2.192389488220215
+Epoch [1].[744] Loss: 1.794332504272461
+Epoch [1].[752] Loss: 1.2637938261032104
+Epoch [1].[760] Loss: 2.347306966781616
+Epoch [1].[768] Loss: 2.937426805496216
+TIME: 0.21929707005620003 seconds per batch
+USAGE: Allocated 3.37GB, Reserved 45.00GB, Peak: 35.82GB
+VALIDATE: Average Loss: 2.2117996215820312
+Saving model checkpoint at checkpoint.pt.... DO NOT EXIT
+Model checkpoint saved at checkpoint.pt at epoch 0 batch 768
+Epoch [1].[776] Loss: 2.8564629554748535
+Epoch [1].[784] Loss: 1.6717427968978882
+Epoch [1].[792] Loss: 2.8233642578125
+Epoch [1].[800] Loss: 1.4498589038848877
+Epoch [1].[808] Loss: 3.2101287841796875
+Epoch [1].[816] Loss: 3.1002426147460938
+Epoch [1].[824] Loss: 2.1486878395080566
+Epoch [1].[832] Loss: 2.4924209117889404
+Epoch [1].[840] Loss: 1.9628554582595825
+Epoch [1].[848] Loss: 2.5147223472595215
+Epoch [1].[856] Loss: 2.064275026321411
+Epoch [1].[864] Loss: 3.161466598510742
+Epoch [1].[872] Loss: 1.8311816453933716
+Epoch [1].[880] Loss: 2.5682241916656494
+Epoch [1].[888] Loss: 3.4880387783050537
+Epoch [1].[896] Loss: 2.7988898754119873
+TIME: 0.21948229521512985 seconds per batch
+USAGE: Allocated 3.19GB, Reserved 47.07GB, Peak: 35.82GB
+VALIDATE: Average Loss: 2.2202486991882324
+Saving model checkpoint at checkpoint.pt.... DO NOT EXIT
+Model checkpoint saved at checkpoint.pt at epoch 0 batch 896
+Epoch [1].[904] Loss: 2.3557534217834473
+Epoch [1].[912] Loss: 2.496497869491577
+Epoch [1].[920] Loss: 2.513941526412964
+Epoch [1].[928] Loss: 1.9078748226165771
+Epoch [1].[936] Loss: 1.6494253873825073
+Epoch [1].[944] Loss: 1.470963478088379
+Epoch [1].[952] Loss: 1.8499422073364258
+Epoch [1].[960] Loss: 1.6891120672225952
+Epoch [1].[968] Loss: 1.6425303220748901
+Epoch [1].[976] Loss: 2.1896188259124756
+Epoch [1].[984] Loss: 1.7858628034591675
+Epoch [1].[992] Loss: 1.9969159364700317
+Epoch [1].[1000] Loss: 2.031829833984375
+Epoch [1].[1008] Loss: 2.4045002460479736
+Epoch [1].[1016] Loss: 2.111539840698242
+Epoch [1].[1024] Loss: 2.0109355449676514
+TIME: 0.23103957436978817 seconds per batch
+USAGE: Allocated 4.22GB, Reserved 44.24GB, Peak: 35.82GB
+VALIDATE: Average Loss: 2.126486301422119
+Saving model checkpoint at checkpoint.pt.... DO NOT EXIT
+Model checkpoint saved at checkpoint.pt at epoch 0 batch 1024
+Epoch [1].[1032] Loss: 1.3363977670669556
+Epoch [1].[1040] Loss: 1.6172744035720825
+Epoch [1].[1048] Loss: 1.4369436502456665
+Epoch [1].[1056] Loss: 2.32859468460083
+Epoch [1].[1064] Loss: 1.3986974954605103
+Epoch [1].[1072] Loss: 1.9129830598831177
+Epoch [1].[1080] Loss: 2.1753814220428467
+Epoch [1].[1088] Loss: 1.3854970932006836
+Epoch [1].[1096] Loss: 2.345202684402466
+Epoch [1].[1104] Loss: 2.108335018157959
+Epoch [1].[1112] Loss: 1.9445650577545166
+Epoch [1].[1120] Loss: 2.015505075454712
+Epoch [1].[1128] Loss: 2.0893115997314453
+Epoch [1].[1136] Loss: 1.6332666873931885
+Epoch [1].[1144] Loss: 3.0140411853790283
+Epoch [1].[1152] Loss: 2.4836504459381104
+TIME: 0.22369895689189434 seconds per batch
+USAGE: Allocated 3.36GB, Reserved 44.24GB, Peak: 35.82GB
+VALIDATE: Average Loss: 2.029134750366211
+Saving model checkpoint at checkpoint.pt.... DO NOT EXIT
+Model checkpoint saved at checkpoint.pt at epoch 0 batch 1152
+Epoch [1].[1160] Loss: 2.069875717163086
+Epoch [1].[1168] Loss: 1.5709738731384277
+Epoch [1].[1176] Loss: 1.9763380289077759
+Epoch [1].[1184] Loss: 1.3459869623184204
+Epoch [1].[1192] Loss: 1.671515941619873
+Epoch [1].[1200] Loss: 1.8883229494094849
+Epoch [1].[1208] Loss: 2.2100212574005127
+Epoch [1].[1216] Loss: 1.6263765096664429
+Epoch [1].[1224] Loss: 2.010986804962158
+Epoch [1].[1232] Loss: 2.8612492084503174
+Epoch [1].[1240] Loss: 1.632651686668396
+Epoch [1].[1248] Loss: 1.6247718334197998
+Epoch [1].[1256] Loss: 2.3166263103485107
+Epoch [1].[1264] Loss: 1.9915165901184082
+Epoch [1].[1272] Loss: 1.7322882413864136
+Epoch [1].[1280] Loss: 2.816291093826294
+TIME: 0.22166493348777294 seconds per batch
+USAGE: Allocated 3.31GB, Reserved 44.24GB, Peak: 35.82GB
+VALIDATE: Average Loss: 1.9625695943832397
+Saving model checkpoint at checkpoint.pt.... DO NOT EXIT
+Model checkpoint saved at checkpoint.pt at epoch 0 batch 1280
+Epoch [1].[1288] Loss: 1.3596135377883911
+Epoch [1].[1296] Loss: 2.842438220977783
+Epoch [1].[1304] Loss: 1.9055365324020386
+Epoch [1].[1312] Loss: 2.3285117149353027
+Epoch [1].[1320] Loss: 2.2720210552215576
+Epoch [1].[1328] Loss: 2.8492062091827393
+Epoch [1].[1336] Loss: 1.4676940441131592
+Epoch [1].[1344] Loss: 2.494309425354004
+Epoch [1].[1352] Loss: 1.8677555322647095
+Epoch [1].[1360] Loss: 2.444415807723999
+Epoch [1].[1368] Loss: 1.853473424911499
+Epoch [1].[1376] Loss: 2.283656597137451
+Epoch [1].[1384] Loss: 1.4137217998504639
+Epoch [1].[1392] Loss: 2.9552173614501953
+Traceback (most recent call last):
+  File "/home/hpc/stonera3/source/repos/notebooks/Transformer/train.py", line 101, in <module>
+    main()
+  File "/home/hpc/stonera3/source/repos/notebooks/Transformer/train.py", line 89, in main
+    train_model(
+  File "/home/hpc/stonera3/source/repos/notebooks/Transformer/model.py", line 338, in train_model
+    loss.backward()
+  File "/home/hpc/stonera3/.local/lib/python3.10/site-packages/torch/_tensor.py", line 630, in backward
+    torch.autograd.backward(
+  File "/home/hpc/stonera3/.local/lib/python3.10/site-packages/torch/autograd/__init__.py", line 364, in backward
+    _engine_run_backward(
+  File "/home/hpc/stonera3/.local/lib/python3.10/site-packages/torch/autograd/graph.py", line 865, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 5.96 GiB. GPU 0 has a total capacity of 44.39 GiB of which 5.71 GiB is free. Including non-PyTorch memory, this process has 38.68 GiB memory in use. Of the allocated memory 27.40 GiB is allocated by PyTorch, and 10.77 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

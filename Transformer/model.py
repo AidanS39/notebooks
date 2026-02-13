@@ -52,35 +52,56 @@ class SelfAttention(nn.Module):
         self.device = device
         self.n_heads = n_heads
 
-        # d_query = d_model / n_heads
+        d_query = int(d_model / n_heads)
+
+        self.norm = nn.LayerNorm(d_model)
 
         self.W_q = nn.Linear(d_model, d_query)
         self.W_k = nn.Linear(d_model, d_query)
-        self.W_v = nn.Linear(d_model, d_model)
+        self.W_v = nn.Linear(d_model, d_query)
+
+        self.W_o = nn.Linear(d_model, d_model)
 
         self.scaling_factor = math.sqrt(d_query)
 
         self.softmax = nn.Softmax(dim=-1)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        
-        
-        x = x.unsqueeze(1).repeat([1, self.n_heads, 1, 1])
-        
-        q = self.W_q(x)
-        k = self.W_k(x)
-        v = self.W_v(x)
 
-        attention_pattern = torch.matmul(q, torch.transpose(k, -2, -1)) / self.scaling_factor
+        # normalize
+        x_norm = self.norm(x)
+
+        # duplicate tensor on heads dimension
+        x_heads = x_norm.unsqueeze(1).repeat([1, self.n_heads, 1, 1]) # shape [batch_size, n_heads, seq_len, d_model]
+
+        # calculate queries, keys, values
+        q = self.W_q(x_heads) # shape [batch_size, n_heads, seq_len, d_query]
+        k = self.W_k(x_heads) # shape [batch_size, n_heads, seq_len, d_query]
+        v = self.W_v(x_heads) # shape [batch_size, n_heads, seq_len, d_query]
+
+        # form attention pattern
+        attention_pattern = torch.matmul(q, torch.transpose(k, -2, -1)) / self.scaling_factor # shape [batch_size, n_heads, seq_len, seq_len]
         
+        # create and apply mask
         seq_len = attention_pattern.shape[-1]
         mask = torch.triu(torch.ones(seq_len, seq_len), diagonal=1).bool().to(self.device)
         attention_pattern = torch.masked_fill(attention_pattern, mask, float("-inf"))
 
+        # apply softmax
         attention_pattern = self.softmax(attention_pattern)
+        attention_vectors = torch.matmul(attention_pattern, v) # shape [batch_size, n_heads, seq_len, d_query]
 
-        output = torch.sum(torch.matmul(attention_pattern, v), dim=1)
-        
+        # concat heads
+        output = torch.transpose(attention_vectors, -2, -1) # shape [batch_size, n_heads, d_query, seq_len]
+        output = torch.flatten(output, start_dim=-3, end_dim=-2) # shape [batch_size, d_model, seq_len]
+        output = torch.transpose(output, -2, -1) # shape [batch_size, seq_len, d_model]
+
+        # final output projection
+        output = self.W_o(output) # shape [batch_size, seq_len, d_model]
+
+        # residual connections
+        output = output + x
+
         return output
 
 
@@ -91,13 +112,17 @@ class MultilayerPerceptron(nn.Module):
                  d_up: int = 256):
         super().__init__()
 
+        self.norm = nn.LayerNorm(d_model)
+
         self.up = nn.Linear(d_model, d_up)
         self.relu = nn.ReLU()
         self.down = nn.Linear(d_up, d_model)
     
     def forward(self, x: torch.Tensor) -> torch.Tensor:
 
-        output = self.up(x)
+        x_norm = self.norm(x)
+
+        output = self.up(x_norm)
         output = self.relu(output)
         output = self.down(output)
 
@@ -134,8 +159,7 @@ class Transformer(nn.Module):
         self.pe = PositionalEncoding(config.d_model, max_len=50000)
 
         self.attention_layers = nn.ModuleList([layer for _ in range(config.n_layers) for layer in 
-                                               (SelfAttention(config.d_model, config.d_query, config.n_heads, config.device), 
-                                                nn.LayerNorm(config.d_model),
+                                               (SelfAttention(config.d_model, config.d_query, config.n_heads, config.device),
                                                 MultilayerPerceptron(config.d_model, config.d_up))])
 
         self.unembedding = nn.Linear(config.d_model, config.n_vocab)
@@ -292,7 +316,7 @@ def train_model(model: nn.Module,
     else:
         raise Exception("Error: checkpoint passed as None")
         
-    compiled_model = torch.compile(model)
+    compiled_model = torch.compile(model, options={"split_reductions": False})
 
     print(f"Starting training on epoch {start_epoch + 1}, batch {start_batch + 1}")
 

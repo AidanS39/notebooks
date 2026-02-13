@@ -21,7 +21,7 @@ def main():
     model.load_state_dict(model_state)
     model = torch.compile(model)
 
-    prompt = "\"Are you a robot?\""
+    prompt = "Once upon a time, there was a thirsty sailor."
 
     print("generating sequence...")
     start_time = time.time()
