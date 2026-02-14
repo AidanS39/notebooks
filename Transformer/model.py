@@ -328,11 +328,11 @@ def train_model(model: nn.Module,
         start_time = time.time()
         for idx, inputs in enumerate(train_loader):
             inputs = inputs.to(device)
-            targets = inputs[:,1:]
-            outputs = compiled_model(inputs)[:,:-1,:]
+            targets = inputs[:,1:] # shape [batch_size, seq_len - 1]
+            outputs = compiled_model(inputs)[:,:-1,:] # shape [batch_size, seq_len - 1, n_vocab]
 
-            targets = targets.reshape(-1)
-            outputs = outputs.reshape(-1, outputs.shape[-1])
+            targets = targets.reshape(-1) # shape [batch_size * (seq_len - 1)]
+            outputs = outputs.reshape(-1, outputs.shape[-1]) # shape [batch_size * (seq_len - 1), n_vocab]
             
             loss = criterion(outputs, targets) / accum_steps
             loss.backward()
@@ -363,24 +363,30 @@ def train_model(model: nn.Module,
 
 
 
-def generate_response(model, encoder: tiktoken.Encoding, device: torch.device, prompt: str):
+def generate_response(model, encoder: tiktoken.Encoding, device: torch.device, prompt: str, temp: float = 1, k: int = 5):
     sequence = encoder.encode(prompt)
     with torch.no_grad():
         num_chars = 0
         end_sequence = False
         while end_sequence == False:
             input = torch.tensor(sequence, dtype=torch.int64).unsqueeze(0).to(device)
-            output = model(input)
-            output = output[0,-1,:].argmax().item()
+            logits = model(input)[0,-1,:]
+
+            # sample token from softmax of top k
+            logits = torch.topk(logits, k=k, dim=-1)
+            values = logits.values / temp
+            values = values.softmax(dim=-1, dtype=torch.float)
+            output_token = logits.indices[int(torch.multinomial(values, num_samples=1, replacement=True))]
+
 
             num_chars += 1
             if num_chars >= 1000:
                 end_sequence = True
                 
-            if output == model.n_vocab - 1:
+            if output_token == model.n_vocab - 1:
                 end_sequence = True
             else:
-                sequence = sequence + [output]
+                sequence = sequence + [output_token]
                 
         response = encoder.decode(sequence)
         return response
