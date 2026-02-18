@@ -324,6 +324,11 @@ def train_model(model: nn.Module,
 
     batch_idx = start_batch
 
+    epochs = list()
+    batch_num = 1
+    batches = list()
+    losses = list()
+
     for epoch in range(start_epoch, n_epochs):
         start_time = time.time()
         for idx, inputs in enumerate(train_loader):
@@ -343,6 +348,10 @@ def train_model(model: nn.Module,
 
             if (batch_idx + 1) % (accum_steps * 4) == 0:
                 print(f"Epoch [{epoch + 1}].[{batch_idx + 1}] Loss: {loss * accum_steps}")
+                epochs.append(epoch)
+                batches.append(batch_num)
+                losses.append(loss * accum_steps)
+                batch_num += 1
 
             if (batch_idx + 1) % (accum_steps * 64) == 0:
                 print_avg_batch_time(start_time, accum_steps * 64)
@@ -361,10 +370,17 @@ def train_model(model: nn.Module,
     epoch = 0
     save_checkpoint(model, optimizer, epoch, batch_idx, checkpoint, checkpoint_path)
 
+    data = pd.DataFrame({"epoch": epochs, "batch": batch_num, "loss": losses})
+    data.to_csv()
+
 
 
 def generate_response(model, encoder: tiktoken.Encoding, device: torch.device, prompt: str, temp: float = 1, k: int = 5):
     sequence = encoder.encode(prompt)
+
+    for token in sequence:
+        print(encoder.decode([token]), end="", flush=True)
+        time.sleep(0.05)
     with torch.no_grad():
         num_chars = 0
         end_sequence = False
@@ -387,6 +403,7 @@ def generate_response(model, encoder: tiktoken.Encoding, device: torch.device, p
                 end_sequence = True
             else:
                 sequence = sequence + [output_token]
-                
+                print(encoder.decode([output_token]), end="", flush=True)
+                time.sleep(0.05)
         response = encoder.decode(sequence)
         return response

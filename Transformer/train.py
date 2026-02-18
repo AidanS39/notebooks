@@ -47,17 +47,17 @@ def main():
 
     model_config = TransformerConfig(
         n_vocab=encoder.n_vocab + 1, # NOTE: add 1 for <EOS> token
-        d_model=512,
+        d_model=1024,
         d_query=64,
-        n_heads=8,
-        n_layers=8,
+        n_heads=16,
+        n_layers=16,
         d_up=512,
         device=device
     )
 
-    n_epochs=2
-    batch_size  = 16
-    accum_steps = 2
+    n_epochs    = 10
+    batch_size  = 8
+    accum_steps = 4
 
     def collate_fn_padding(batch):
         batch = pad_sequence(batch, batch_first=True)

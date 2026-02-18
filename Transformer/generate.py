@@ -21,13 +21,12 @@ def main():
     model.load_state_dict(model_state)
     model = torch.compile(model)
 
-    prompt = "One day, there was a frustrated girl studying for her exam."
+    prompt = "One day, there was a bear looking for honey."
 
     print("generating sequence...")
     start_time = time.time()
     response = generate_response(model, encoder=encoder, device=device, prompt=prompt, temp=1.5, k=2)
-    print(response)
-    print(f"generated sequence in {time.time() - start_time} seconds")
+    print(f"\ngenerated sequence in {time.time() - start_time} seconds")
 
 if __name__ == "__main__":
     main()

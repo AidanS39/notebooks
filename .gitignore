@@ -210,3 +210,5 @@ __marimo__/
 train_data.bin
 
 *.pt
+
+*.out
