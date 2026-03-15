@@ -8,10 +8,11 @@ from model import generate_response
 def main():
     # torch.manual_seed(42)
     torch.set_float32_matmul_precision('high')
-    checkpoint = TransformerCheckpoint.load("model_1024_8_8_2048.pt")
-
+    
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-    print(device)
+    print(device, flush=True)
+    
+    checkpoint = TransformerCheckpoint.load("./models/model_2048_8_8_2048.pt")
 
     encoder = checkpoint.encoder
     config = checkpoint.config

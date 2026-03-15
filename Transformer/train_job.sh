@@ -12,6 +12,27 @@
 #SBATCH --constraint=l40s                # use rtxa5000, l40s or gtx1080ti here to limit GPU selection
 #SBATCH --time=5-00:00:00                # Max run time (days-hh:mm:ss) ... adjust as necessary
 
+# set model parameters
+D_MODEL=1024
+N_HEADS=8
+N_LAYERS=8
+D_UP=2048
+N_EPOCHS=5
 
-# Run your training script
-python3 -u train.py
+while getopts "m:h:l:u:e:" flag; do
+    case "${flag}" in
+        m) 
+            D_MODEL=$OPTARG ;;
+        h) 
+            N_HEADS=$OPTARG ;;
+        l) 
+            N_LAYERS=$OPTARG ;;
+        u)
+            D_UP=$OPTARG ;;
+        e)
+            N_EPOCHS=$OPTARG ;;
+    esac
+done
+
+# training script
+python3 -u train.py -m $D_MODEL -h $N_HEADS -l $N_LAYERS -u $D_UP -e $N_EPOCHS

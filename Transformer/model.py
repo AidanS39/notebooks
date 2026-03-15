@@ -13,7 +13,8 @@ import time
 import math
 import os
 
-
+from util import EpochLog
+from util import TrainLog
 
 # taken from https://pytorch-tutorials-preview.netlify.app/beginner/transformer_tutorial.html
 class PositionalEncoding(nn.Module):
@@ -35,7 +36,7 @@ class PositionalEncoding(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Arguments:
-            x: Tensor, shape ``[batch_size, seq_len, embedding_dim]``
+            x: Tensor, shape ``[batch_size, seq_len, d_model]``
         """
         x = x + self.pe[:, :x.size(1)]
         return self.dropout(x)
@@ -68,7 +69,7 @@ class SelfAttention(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
 
         # normalize
-        x_norm = self.norm(x)
+        x_norm = self.norm(x) # shape [batch_size, seq_len, d_model]
 
         # calculate queries, keys, values
         q = self.W_q(x_norm) # shape [batch_size, seq_len, d_model]
@@ -191,7 +192,8 @@ class TransformerCheckpoint():
             epoch: int = 0, 
             batch: int = 0, 
             n_epochs: int = 3, 
-            accum_steps: int = 2
+            accum_steps: int = 2,
+            train_log: TrainLog = None
         ):
         self.model_state = model_state
         self.optim_state = optim_state
@@ -202,6 +204,11 @@ class TransformerCheckpoint():
         self.batch       = batch
         self.n_epochs    = n_epochs
         self.accum_steps = accum_steps
+    
+        if train_log == None:
+            train_log = TrainLog()
+        self.train_log = train_log
+
     
     def save(self, file_path):
         print(f"Saving model checkpoint at {file_path}.... DO NOT EXIT")
@@ -214,7 +221,8 @@ class TransformerCheckpoint():
             "epoch"      : self.epoch,
             "batch"      : self.batch,
             "n_epochs"   : self.n_epochs,
-            "accum_steps": self.accum_steps
+            "accum_steps": self.accum_steps,
+            "train_log"  : self.train_log
         }, file_path)
         print(f"Model checkpoint saved at {file_path} at epoch {self.epoch} batch {self.batch}")
     
@@ -230,7 +238,8 @@ class TransformerCheckpoint():
             checkpoint["epoch"], 
             checkpoint["batch"],
             checkpoint["n_epochs"],
-            checkpoint["accum_steps"]
+            checkpoint["accum_steps"],
+            checkpoint["train_log"]
         )
 
 
@@ -321,43 +330,41 @@ def train_model(model: nn.Module,
         
     compiled_model = torch.compile(model, options={"split_reductions": False})
 
-    print(f"Starting training on epoch {start_epoch + 1}, batch {start_batch + 1}")
+    print(f"Starting training on epoch {start_epoch}, batch {start_batch}")
+    
+    checkpoint.train_log.start_timer()
 
     compiled_model.train()
 
     batch_idx = start_batch
 
-    # epochs = list()
-    # batch_num = 1
-    # batches = list()
-    # losses = list()
-
     for epoch in range(start_epoch, n_epochs):
+        epoch_log = EpochLog(epoch)
         start_time = time.time()
         for idx, inputs in enumerate(train_loader):
             inputs = inputs.to(device)
             targets = inputs[:,1:] # shape [batch_size, seq_len - 1]
-            outputs = compiled_model(inputs)[:,:-1,:] # shape [batch_size, seq_len - 1, n_vocab]
-
             targets = targets.reshape(-1) # shape [batch_size * (seq_len - 1)]
-            outputs = outputs.reshape(-1, outputs.shape[-1]).float() # shape [batch_size * (seq_len - 1), n_vocab]
             
-            loss = criterion(outputs, targets) / accum_steps
+            with torch.autocast(device_type=device.type, dtype=torch.float32):
+                outputs = compiled_model(inputs)[:,:-1,:] # shape [batch_size, seq_len - 1, n_vocab]
+                outputs = outputs.reshape(-1, outputs.shape[-1]) # shape [batch_size * (seq_len - 1), n_vocab]
+                
+                loss = criterion(outputs, targets) / accum_steps
+
             loss.backward()
 
-            if (batch_idx + 1) % accum_steps == 0:
+            batch_idx += 1
+
+            if (batch_idx) % accum_steps == 0:
                 optimizer.step()
                 optimizer.zero_grad()
 
-            if (batch_idx + 1) % (accum_steps * 4) == 0:
-                print(f"Epoch [{epoch + 1}].[{batch_idx + 1}] Loss: {loss * accum_steps}")
+            if (batch_idx) % (accum_steps * 4) == 0:
+                epoch_log.add_batch_log(batch_idx - 1, loss.item() * accum_steps)
+                print(f"Epoch [{epoch}].[{batch_idx - 1}] Loss: {loss * accum_steps}")
 
-                # epochs.append(epoch)
-                # batches.append(batch_num)
-                # losses.append(loss * accum_steps)
-                # batch_num += 1
-
-            if (batch_idx + 1) % (accum_steps * 64) == 0:
+            if (batch_idx) % (accum_steps * 64) == 0:
                 print_avg_batch_time(start_time, accum_steps * 64)
                 start_time = time.time()
 
@@ -365,18 +372,15 @@ def train_model(model: nn.Module,
 
                 validate_model(compiled_model, device, criterion, validation_loader)
 
-                checkpoint.batch = batch_idx
-                save_checkpoint(model, optimizer, epoch, batch_idx + 1, checkpoint, checkpoint_path)
-            batch_idx += 1
+                save_checkpoint(model, optimizer, epoch, batch_idx, checkpoint, checkpoint_path)
 
         batch_idx = 0
+        checkpoint.train_log.add_epoch_log(epoch_log)
         save_checkpoint(model, optimizer, epoch, batch_idx, checkpoint, checkpoint_path)
         torch.cuda.empty_cache()
-    epoch = 0
+    epoch = n_epochs - 1
+    checkpoint.train_log.stop_timer()
     save_checkpoint(model, optimizer, epoch, batch_idx, checkpoint, checkpoint_path)
-
-    # data = pd.DataFrame({"epoch": epochs, "batch": batch_num, "loss": losses})
-    # data.to_csv()
 
 
 

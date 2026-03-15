@@ -8,6 +8,7 @@ import torch._inductor.config as inductor_config
 from datasets import load_dataset
 import tiktoken
 import os
+import argparse
 
 from model import Transformer
 from model import TransformerCheckpoint
@@ -15,7 +16,31 @@ from model import TransformerConfig
 from model import CheckpointRandomSampler
 from model import train_model
 
+def get_arguments():
+    parser = argparse.ArgumentParser(add_help=False)
+
+    parser.add_argument('--help', action='help', help='help menu')
+
+    parser.add_argument("-m", "--d_model", type=int, default=1024, help="model dimension")
+    parser.add_argument("-h", "--n_heads", type=int, default=8, help="number of heads")
+    parser.add_argument("-l", "--n_layers", type=int, default=8, help="number of layers")
+    parser.add_argument("-u", "--d_up", type=int, default=2048, help="up dimension")
+    parser.add_argument("-e", "--n_epochs", type=int, default=5, help="number of epochs")
+
+    args = parser.parse_args()
+
+    print(f"D_MODEL {args.d_model}")
+    print(f"N_HEADS {args.n_heads}")
+    print(f"N_LAYERS {args.n_layers}")
+    print(f"D_UP {args.d_up}")
+    print(f"N_EPOCHS {args.n_epochs}")
+
+    return args
+
 def main():
+
+    args = get_arguments()
+
     os.environ["PYTORCH_ALLOC_CONF"] = "expandable_segments:True"
     torch.manual_seed(42)
     torch.set_float32_matmul_precision('high')
@@ -34,7 +59,7 @@ def main():
         sequence["text"] = torch.tensor(encoder.encode(sequence["text"]) + [encoder.n_vocab], dtype=torch.int64)
         return sequence
 
-    tokenized_dataset = dataset.map(tokenize, num_proc=8, fn_kwargs={"encoder": encoder}).with_format("torch")
+    tokenized_dataset = dataset.map(tokenize, num_proc=16, fn_kwargs={"encoder": encoder}).with_format("torch")
     tokenized_dataset = tokenized_dataset.train_test_split(test_size=0.2, shuffle=True)
 
     train = tokenized_dataset["train"]["text"]
@@ -45,19 +70,19 @@ def main():
     validation = test_set["test"]["text"]
 
     # hyperparameters
-
+    
     model_config = TransformerConfig(
         n_vocab=encoder.n_vocab + 2, # NOTE: add 2, 1 for <EOS> token and 1 for padding token
-        d_model=1024,
-        n_heads=16,
-        n_layers=8,
-        d_up=512,
+        d_model=args.d_model,
+        n_heads=args.n_heads,
+        n_layers=args.n_layers,
+        d_up=args.d_up,
         device=device
     )
 
-    n_epochs    = 5
-    batch_size  = 8
-    accum_steps = 4
+    n_epochs    = args.n_epochs
+    batch_size  = 16
+    accum_steps = 2
 
     padding_value = model_config.n_vocab - 1 # ignore padding value during loss
 
@@ -65,9 +90,9 @@ def main():
         batch = pad_sequence(batch, batch_first=True, padding_value=padding_value)
         return batch
 
-    checkpoint_path = f"model_{model_config.d_model}_{model_config.n_heads}_{model_config.n_layers}_{model_config.d_up}.pt"
+    checkpoint_path = f"./models/model_{model_config.d_model}_{model_config.n_heads}_{model_config.n_layers}_{model_config.d_up}.pt"
 
-    model = Transformer(model_config).to(device=device, dtype=torch.bfloat16)
+    model = Transformer(model_config).to(device=device, dtype=torch.float32)
 
     criterion = nn.CrossEntropyLoss(ignore_index=padding_value)
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
