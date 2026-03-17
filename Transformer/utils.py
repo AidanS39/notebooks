@@ -2,6 +2,7 @@ import time
 import argparse
 import torch
 import warnings
+from pathlib import Path
 
 class EpochLog():
     def __init__(self, epoch):
@@ -24,27 +25,6 @@ class TrainLog():
         if self.end_time == None:
             self.end_time = time.time()
 
-def get_arguments():
-    parser = argparse.ArgumentParser(add_help=False)
-
-    parser.add_argument('--help', action='help', help='help menu')
-
-    parser.add_argument("-m", "--d_model", type=int, default=1024, help="model dimension")
-    parser.add_argument("-h", "--n_heads", type=int, default=8, help="number of heads")
-    parser.add_argument("-l", "--n_layers", type=int, default=8, help="number of layers")
-    parser.add_argument("-u", "--d_up", type=int, default=2048, help="up dimension")
-    parser.add_argument("-e", "--n_epochs", type=int, default=5, help="number of epochs")
-
-    args = parser.parse_args()
-
-    print(f"D_MODEL {args.d_model}")
-    print(f"N_HEADS {args.n_heads}")
-    print(f"N_LAYERS {args.n_layers}")
-    print(f"D_UP {args.d_up}")
-    print(f"N_EPOCHS {args.n_epochs}")
-
-    return args
-
 def get_device() -> torch.device:
     if torch.cuda.is_available():
         return torch.device("cuda") 
@@ -52,12 +32,21 @@ def get_device() -> torch.device:
         warnings.warn("CUDA device not available, will use CPU instead.", UserWarning)
         return torch.device("cpu")
     
-def slow_print(sequence: str, char_delay: float = 0.04, word_delay: float = 0.2):
-    sequence = sequence.split(sep=" ")
-    for i, word in enumerate(sequence):
-        for letter in word:
-            print(f"{letter}", end="", flush=True)
-            time.sleep(char_delay)
-        if i < len(sequence) - 1:
-            print(" ", end="", flush=True)
-        time.sleep(word_delay)
+def slow_print(sequence: str, char_delay: float = 0.02, word_delay: float = 0.1, delay: bool = True):
+
+    if delay == True:
+        sequence = sequence.split(sep=" ")
+        for i, word in enumerate(sequence):
+            for letter in word:
+                print(f"{letter}", end="", flush=True)
+                time.sleep(char_delay)
+            if i < len(sequence) - 1:
+                print(" ", end="", flush=True)
+            time.sleep(word_delay)
+    else:
+        print(sequence, end="", flush=True)
+
+def get_model_files(models_path: str):
+    model_dir = Path(models_path)
+    model_files = sorted([f.name for f in model_dir.glob("*.pt")])
+    return model_files

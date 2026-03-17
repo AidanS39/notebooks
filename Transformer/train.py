@@ -16,8 +16,28 @@ from model import TransformerConfig
 from model import CheckpointRandomSampler
 from model import train_model
 
-from utils import get_arguments
 from utils import get_device
+
+def get_arguments():
+    parser = argparse.ArgumentParser(add_help=False)
+
+    parser.add_argument('--help', action='help', help='help menu')
+
+    parser.add_argument("-m", "--d_model", type=int, default=1024, help="model dimension")
+    parser.add_argument("-h", "--n_heads", type=int, default=8, help="number of heads")
+    parser.add_argument("-l", "--n_layers", type=int, default=8, help="number of layers")
+    parser.add_argument("-u", "--d_up", type=int, default=2048, help="up dimension")
+    parser.add_argument("-e", "--n_epochs", type=int, default=5, help="number of epochs")
+
+    args = parser.parse_args()
+
+    print(f"D_MODEL {args.d_model}")
+    print(f"N_HEADS {args.n_heads}")
+    print(f"N_LAYERS {args.n_layers}")
+    print(f"D_UP {args.d_up}")
+    print(f"N_EPOCHS {args.n_epochs}")
+
+    return args
 
 def main():
 
